@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spam Classifier</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        textarea {
+            width: 70%;
+            height: 80px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- templates/index.html -->
+        <textarea id="text_data"></textarea>
+        <button onclick="submitCategory()">提交分类</button>
+    </div>
+</body>
+<script>
+function submitCategory() {
+    var textData = document.getElementById('text_data').value;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/identify", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            // 解析响应的 JSON 数据
+            var response = JSON.parse(this.responseText);
+
+            // 根据后台返回的布尔值显示不同的 alert
+            if(response.is_normal) {
+                alert('这是正常邮件');
+            } else {
+                alert('这是垃圾邮件');
+             }
+         }
+    }
+    xhr.send("text_data=" + encodeURIComponent(textData));
+}
+</script>
+</html>
